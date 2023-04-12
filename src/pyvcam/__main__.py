@@ -17,7 +17,21 @@ import logging
 from pyvcam.driver import PyVCAM
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('pyvcam')
+logger.setLevel(logging.DEBUG)
+# create file handler which logs even debug messages
+fh = logging.FileHandler('spam.log')
+fh.setLevel(logging.DEBUG)
+# create console handler with a higher log level
+ch = logging.StreamHandler()
+ch.setLevel(logging.ERROR)
+# create formatter and add it to the handlers
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+ch.setFormatter(formatter)
+# add the handlers to the logger
+logger.addHandler(fh)
+logger.addHandler(ch)
 
 def get_argparser():
     parser = argparse.ArgumentParser(description="""PyVCAM controller. Use this controller to drive the Teledyne PrimeBSI camera.
@@ -29,15 +43,19 @@ def get_argparser():
 def main():
     args = get_argparser().parse_args()
     common_args.init_logger_from_args(args)
+    logger.info('Creating an instance of PyVCAM')
     camera = PyVCAM()
+    logger.info('PyVCAM created. Opening camera...')
 
     try:
         camera.open()
-        logger.info('PyVCAM open.')
+        logger.info('Camera open. Establishing connection...')
         simple_server_loop({"pyvcam": camera}, common_args.bind_address_from_args(args), args.port)
+    except RuntimeError:
+        logger.exception("Connection refused. Check camera status")
     finally:
         camera.close()
-        logger.info('PyVCAM closed.')
+        logger.info('Camera closed.')
         del camera
 
 if __name__ == "__main__":
