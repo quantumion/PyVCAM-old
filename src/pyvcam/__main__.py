@@ -2,7 +2,8 @@
 """
 __main__.py
 
-Implement ARTIQ Network Device Support Package (NDSP) to support Teledyne PrimeBSI camera integration into ARTIQ experiment.
+Implement ARTIQ Network Device Support Package (NDSP) to support Teledyne Prime BSI camera integration
+into ARTIQ experiment.
 
 Kevin Chen
 2023-02-24
@@ -33,14 +34,16 @@ ch.setFormatter(formatter)
 logger.addHandler(fh)
 logger.addHandler(ch)
 
-def get_argparser():
-    parser = argparse.ArgumentParser(description="""PyVCAM controller. Use this controller to drive the Teledyne PrimeBSI camera.
-                                     See documentation at https://github.com/Photometrics/PyVCAM""")
+
+def get_argparser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="""PyVCAM controller. Use this controller to drive the
+                            Teledyne Prime BSI camera. See documentation at https://github.com/quantumion/PyVCAM""")
     common_args.simple_network_args(parser, 3249)
     common_args.verbosity_args(parser)
     return parser
 
-def main():
+
+def main() -> None:
     args = get_argparser().parse_args()
     common_args.init_logger_from_args(args)
     logger.info('Creating an instance of PyVCAM')
@@ -49,14 +52,15 @@ def main():
 
     try:
         camera.open()
-        logger.info('Camera open. Establishing connection...')
+        logger.info('Camera open.')
         simple_server_loop({"pyvcam": camera}, common_args.bind_address_from_args(args), args.port)
     except RuntimeError:
-        logger.exception("Connection refused. Check camera status")
+        logger.exception('Connection refused. Check camera status')
     finally:
         camera.close()
         logger.info('Camera closed.')
         del camera
+
 
 if __name__ == "__main__":
     main()

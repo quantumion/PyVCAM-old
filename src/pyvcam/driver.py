@@ -18,6 +18,7 @@ import logging
 
 module_logger = logging.getLogger('pyvcam.driver')
 
+
 class PyVCAM:
     """
     Teledyne PrimeBSI camera control.
