@@ -14,6 +14,9 @@ from pyvcam import pvc  # type: ignore
 from pyvcam.camera import Camera
 from pyvcam import constants as const
 from typing import NoReturn
+import logging
+
+module_logger = logging.getLogger('pyvcam.driver')
 
 
 class PyVCAM:
@@ -27,6 +30,8 @@ class PyVCAM:
         Creates camera object.
         **NOTE**: This does not open the camera. User has to call :func:`open` either in controller or experiment.
         """
+        self.logger = logging.getLogger('pyvcam.driver.PyVCAM')
+        self.logger.info('Creating an instance of PyVCAM')
         pvc.init_pvcam()
         self.cam = [cam for cam in Camera.detect_camera()][0]
 
@@ -56,6 +61,7 @@ class PyVCAM:
         :return: None
         :raise RuntimeError: If call to PVCAM fails (e.g. Camera is already open).
         """
+        self.logger.info('Opening camera')
         self.cam.open()
 
     def close(self) -> None:
