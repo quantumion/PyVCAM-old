@@ -1,0 +1,29 @@
+PVCAM-SDK:
+==========
+
+Common:
+-------
+build-essential (for building only)
+gcc-multilib    (for building only)
+g++-multilib    (for building only)
+pkg-config      (for building only, optional)
+
+SDK examples/tests:
+-------------------
+libtiff5
+libstdc++6:i386      (to run 32 bit tests on 64 bit OS)
+libwxgtk3.0-0v5      (PVCamTest GTK 2 version, Ubuntu 16.04 and 18.04)
+libwxgtk3.0-gtk3-0v5 (PVCamTest GTK 3 version, Ubuntu 18.04 and newer)
+libtiff5-dev         (for building only)
+libwxgtk3.0-dev      (for building only, PVCamTest GTK 2 version)
+libwxgtk3.0-gtk3-dev (for building only, PVCamTest GTK 3 version)
+
+
+NOTE:
+=====
+
+On 64 bit and 32 bit systems install native packages using command like:
+    $ sudo apt install libtiff5
+
+32 bit packages on 64 bit system can be installed for instance like this:
+    $ sudo apt install libtiff5:i386

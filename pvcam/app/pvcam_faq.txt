@@ -1,0 +1,190 @@
+Frequently Asked Questions
+==========================
+
+For latest info go to Teledyne Photometrics web page www.photometrics.com.
+
+
+Known Issues & Limitations
+--------------------------
+
+*  If you are having issues with Kinetix PCIe acquisition stability, please make
+   sure the camera is running in 'multiple ISRs' mode. To check the mode, please
+   run 'dmesg | grep pvcam'. Specifically on HP Z4 G4 computers, enabling
+   virtualization (VT-d) in BIOS will allow the operating system to assign
+   multiple ISRs to the device.
+
+*  The USB driver requires libusb version 1.0.21 or newer. E.g. Ubuntu 16.04
+   needs manual update, see note in pvcam_required_packages-Ubuntu.txt
+
+
+PVCAM Linux General
+-------------------
+
+Q1: What is PVCAM?
+A1: PVCAM is an ANSI C library of camera control and data acquisition functions.
+   Please refer to the PVCAM User Manual for general PVCAM questions.
+   The manual is a part of PVCAM SDK package.
+
+Q2: What architectures PVCAM runs on?
+A2: PVCAM binaries are built for x86 and ARM and for both 32- and 64-bit
+   architectures.
+   Namely, supported systems return following values for 'uname -m' command:
+   x86_64, i686, aarch64 and armv7l.
+   The installer contains binaries for all architectures and installs only those
+   that are relevant on target OS.
+
+Q3: How can I install the PVCAM library and drivers?
+A3: On Ubuntu, it is recommended to use an interactive helper script that
+   installs all dependencies and does necessary setup for current user.
+   Run the helper script with normal user rights:
+    $ bash pvcam__install_helper-Ubuntu.sh
+
+   Otherwise, just run the installer directly with normal user rights
+   (N.N.N.N is the version number):
+    $ bash pvcam_N.N.N.N.run
+
+   The installer will temporarily extract the data into current folder and run
+   internally an installation script using sudo command - it will ask for user
+   password.
+   Be sure the user is allowed to use sudo.
+
+Q4: What packages are included with PVCAM Linux installer?
+A4: Dynamic PVCAM libraries with PCIe and USB drivers come with the PVCAM
+   installer. They are required to run PVCAM-based applications.
+   There is also included one CLI application (PVCamTestCli) and one GUI
+   application (PVCamTest) for basic testing and presenting camera capabilities.
+   Additionally, the VersionInformation CLI application prints out full camera
+   firmware version and most important identification parameters that could be
+   requested by technical support.
+
+Q5: What packages PVCAM depends on?
+A5: All PVCAM installers will suggest a list of packages that should be
+   installed. Basically, the only dependency is libusb library for USB cameras.
+   Other dependencies depend on application used or are required for developers
+   only.
+   More detailed list is in pvcam_required_packages-Ubuntu.txt file.
+
+Q6: What interfaces does PVCAM support?
+A6: USB (user mode driver) and PCIe (kernel mode driver) are supported.
+   The source code for kernel mode PCIe driver is included in the PVCAM package.
+
+Q7: How to compile PCIe driver for the installed kernel or after kernel update?
+A7: The installer will do the compilation for the first time. If you have
+   installed dkms package and related linux-headers packages, the whole process
+   is also automated for every kernel update and new kernels installation.
+   If DKMS is not available on system, the same process needs to be done
+   manually whenever the kernel is updated or installed.
+
+   To re-compile the PCIe driver after kernel update, run:
+    $ sudo bash /opt/pvcam/drivers/in-kernel/pcie/build_and_install.sh
+
+Q8: How PVCAM detects in-kernel drivers?
+A8: Detected PCIe cameras have device files in /dev/pvcamPCIE_X where X is a
+   number starting from 0 for the first camera.
+
+Q9: How to work with cameras without super-user rights?
+A9: The installer takes care of setting udev rules to allow that. The user has
+   to be a member of 'users' group.
+   Add the user to group 'users' by using below command:
+    $ sudo usermod -a -G users <user_name>
+   The helper install script does that automatically.
+
+Q10: Can the PCIe camera be connected to an already running computer?
+A10: The real hot-plug is not supported on Linux, but some cameras support
+   hot-swapping. It means that the PCIe card must be plugged in the slot and the
+   camera must be powered on before the computer is turned on. Once the card and
+   camera is recognized during boot, the camera can be turned off, and even
+   disconnected. When it is turned back on, a ready to use script must be
+   executed manually to make the camera operational again.
+
+   To rescan the cameras after hot-swap, run:
+    $ sudo bash /opt/pvcam/drivers/in-kernel/pcie/hotplug_pcie.sh
+
+   The hot-swapping currently works with Iris and Kinetix cameras only. It is
+   expected that all PCIe cameras released in future will support hot-swapping.
+   With older cameras the computer must be rebooted.
+
+Q11: Can you give an example of Linux distribution that is supported?
+A11: Recommended distribution is Ubuntu 18.04 LTS or newer. The kernel version
+   5.3 or newer is recommended for the best performance of PCIe driver and it is
+   the lowest version required with Kinetix and newer PCIe cameras. The lowest
+   kernel version for USB 3.1 Gen 2 cameras is 4.18.
+   Generally, any recent 64- or 32-bit Linux distribution can be used.
+
+Q12: Is Secure Boot supported? My PCIe camera was not detected with Secure Boot.
+A12: The Secure Boot is fully supported. But the driver for PCIe cameras needs
+   to be signed in order to be accepted and loaded by Linux kernel.
+   To ensure everything works as expected, please use the
+   pvcam__install_helper-Ubuntu.sh script to install PVCAM, or install 'dkms'
+   package *before* installing PVCAM.
+   The DKMS takes care of generating signing key, signs the driver and enrolls
+   the key to UEFI. Simply follow instructions on the screen.
+   After first PVCAM installation, you will be asked to enter one time password
+   to enroll the key. After PC reboot, UEFI will ask you once to enroll the key,
+   you will type the password and that's it. You can forget the password now.
+
+Q13: Single USB camera runs well. Why two or more cameras don't work at the same
+     time? The same happens to single USB camera with large sensor as well.
+A13: The Linux kernel limits the size of buffers allocated for the USB transfers
+   by default to 16MB. This limit needs to be adjusted.
+   To prevent image acquisition failures, it is recommended to increase this
+   limit to a value that safely covers the total size of stream buffer transfers
+   that might be concurrently scheduled for all open cameras at any moment,
+   rounded up to 4MB blocks per camera, plus 1MB considering also other possible
+   components or applications that could be sharing the USB subsystem with your
+   application.
+
+   For instance, with Iris 15 featuring 15Mpix sensor, one full frame takes
+   circa 30MB, rounded up to 4MB blocks is 32MB. For four Iris 15 cameras
+   running at the same time, a safe limit could be 4*32+1 = 129MB.
+
+   The limit is controlled by the usbcore.usbfs_memory_mb kernel parameter
+   (as size in MB). To check its current value, run:
+    $ cat /sys/module/usbcore/parameters/usbfs_memory_mb
+   
+   To increase this limit permanently e.g. to 129MB, you can add a kernel
+   command line parameter to your bootloader configuration as:
+    usbcore.usbfs_memory_mb=129
+
+   Alternatively, you can adjust it on the fly with administrator privileges
+   by executing:
+    $ sudo bash -c 'echo 129 > /sys/module/usbcore/parameters/usbfs_memory_mb'
+
+   The max. allowed limit is set by Linux kernel to 2047MB.
+   To disable this restriction, use value 0 (not recommended).
+
+Q14: What environment variables should I be aware of?
+A14: There are a few environment variables provided by PVCAM. They all start
+   with PVCAM_ prefix. See the list with command:
+    $ env | grep PVCAM_
+
+   PVCAM_UMD_PATH - Folder where PVCAM searches user-mode drivers.
+   PVCAM_VERSION - Installed PVCAM version.
+
+   There are also a few variables that can be defined to enable logging. All
+   variables listed below should contain file name with path where the
+   particular log file should be stored. The logs are usually too verbose
+   and are useful only when reporting a problem back to Teledyne Photometrics.
+   If a variable is not defined, there are no logs stored.
+   Note: If some _LOG_FILE variable is defined, new logs are appended to file's
+   end and the file might become excessively large.
+   Do not define this variable unless requested by technical support.
+
+   PVCAM_CORE_LOG_FILE - Leads to file with logs from PVCAM core.
+   PVCAM_DDI_LOG_FILE - Leads to file with logs from PVCAM Device Driver
+        Interface.
+   PVCAM_DRIVER_USB_LOG_FILE - Leads to file with logs from user-mode USB
+        driver.
+
+   In addition, there is one variable for each component that could modify log
+   verbosity.
+   Please, do not set log level for logs sent to Teledyne Photometrics.
+
+   PVCAM_CORE_LOG_LEVEL
+   PVCAM_DDI_LOG_LEVEL
+   PVCAM_DRIVER_USB_LOG_LEVEL
+        This variable can be set to the first letter (case insensitive) of the
+        log message level, by selecting an option from the following list:
+        Error, Warning, Info, Debug, Verbose.
+        If variable is not defined, or if it contains invalid value, the most
+        verbose level is used.

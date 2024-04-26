@@ -1,0 +1,58 @@
+PVCAM:
+======
+
+USB driver:
+-----------
+libusb-1.0-0          (version 1.0.21 or newer! Ubuntu 16.04 needs manual update, see note below)
+
+PCIe drivers:
+-------------
+build-essential
+dkms                  (strongly recommended, rebuilds driver on every kernel update,
+                       required with Secure Boot enabled)
+linux-headers-generic (if dkms not installed)
+libelf-dev            (optional, if CONFIG_STACK_VALIDATION=y needed)
+
+Applications:
+-------------
+libtiff5
+libwxgtk3.0-0v5      (PVCamTest GTK 2 version, Ubuntu 16.04 and 18.04)
+libwxgtk3.0-gtk3-0v5 (PVCamTest GTK 3 version, Ubuntu 18.04 and newer)
+
+
+NOTE:
+=====
+
+On 64 bit and 32 bit systems install native packages using command like:
+    $ sudo apt install libusb-1.0-0
+
+32 bit packages on 64 bit system can be installed for instance like this:
+    $ sudo apt install libusb-1.0-0:i386
+
+USB cameras on Ubuntu 16.04:
+----------------------------
+
+Ubuntu 16.04 has libusb library 1.0.20. It must be manually updated to version
+1.0.21 available in Ubuntu 18.04 in order to support USB cameras.
+
+Open the terminal and download the DEB package to your platform. The last number
+in package name could change over time. Confirm the right name at:
+    https://packages.ubuntu.com/bionic/libusb-1.0-0
+
+X86 64 bit runtime package:
+    $ wget http://archive.ubuntu.com/ubuntu/pool/main/libu/libusb-1.0/libusb-1.0-0_1.0.21-2_amd64.deb
+X86 32 bit runtime package:
+    $ wget http://archive.ubuntu.com/ubuntu/pool/main/libu/libusb-1.0/libusb-1.0-0_1.0.21-2_i386.deb
+ARM 64 bit runtime package:
+    $ wget http://ports.ubuntu.com/ubuntu-ports/pool/main/libu/libusb-1.0/libusb-1.0-0_1.0.21-2_arm64.deb
+ARM 32 bit runtime package:
+    $ wget http://ports.ubuntu.com/ubuntu-ports/pool/main/libu/libusb-1.0/libusb-1.0-0_1.0.21-2_armhf.deb
+
+Then install/update the package:
+    $ sudo dpkg -i libusb-1.0-0_1.0.21-2_*.deb
+
+To revert these changes and get back the libusb version from official repository,
+force uninstall the package (without uninstalling its dependencies),
+and if it was installed before, install libusb back:
+    $ sudo dpkg --remove --force-depends libusb-1.0-0
+    $ sudo apt install libusb-1.0-0

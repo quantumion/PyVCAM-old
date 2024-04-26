@@ -1,0 +1,76 @@
+Frequently asked questions
+==========================
+
+For the latest info, go to Teledyne Photometrics web page www.photometrics.com.
+
+
+PVCAM SDK
+---------
+
+Q1: How can I obtain the SDK package?
+A1: SDK package is available upon request to all application developers. It
+   includes code samples and the files necessary to dynamically link to PVCAM.
+
+Q2: How can I install the SDK package?
+A2: On Ubuntu, it is recommended to use an interactive helper script that
+   installs all dependencies.
+   Run the helper script with normal user rights:
+    $ bash pvcam-sdk__install_helper-Ubuntu.sh
+
+   Otherwise, just run the installer directly with normal user rights
+   (N.N.N.N is the version number):
+    $ bash pvcam-sdk_N.N.N.N-N.run
+
+   The installer will temporarily extract the data into current folder and run
+   internally an installation script using sudo command, which will ask for user
+   password.
+   Be sure the user is allowed to use sudo.
+
+Q3: What packages are included with PVCAM SDK installer?
+A3: Public header files, documentation, helper libraries, examples and a few
+   other files come with the PVCAM SDK installer.
+   They help to understand how PVCAM works and allow to build PVCAM-based
+   applications.
+
+Q4: What packages PVCAM SDK depends on?
+A4: All PVCAM installers will suggest a list of packages that should be
+   installed. Basically, the SDK does not depend on any package.
+   Other dependencies depend on application used or are required for developers
+   only.
+   More detailed list is in pvcam-sdk_required_packages-Ubuntu.txt file.
+
+Q5: What applications are provided? What are their locations and what is the
+   purpose of each of them?
+A5: The SDK comes with a number of examples, from simple C tests to complex GUI
+   application. For instance, start with a set of example command line
+   applications, and have a look into /opt/pvcam/sdk/examples/code_samples
+   folder.
+
+Q6: How to rebuild code samples?
+A6: First, copy the chosen project folder from /opt to any folder with write
+   permissions, e.g. in your home.
+   Ensure the new path does *not* contain whitespaces!
+    $ mkdir ~/build
+    $ cp -r /opt/pvcam/sdk/examples/code_samples/ ~/build
+
+   Second, switch to folder with Makefile and build all binaries, e.g.:
+    $ cd ~/build/code_samples/src/ImageSequence
+    $ make clean && make        <-- cleans and builds debug and release binaries
+
+   Optionally, build only debug or release binaries:
+    $ make clean_debug   && make debug      <-- cleans and builds debug only
+    $ make clean_release && make release    <-- cleans and builds release only
+
+   Built binaries are then located in bin folder, e.g. on x86_64 platform see:
+    $ ls ~/build/code_samples/bin/linux-x86_64/debug
+    $ ls ~/build/code_samples/bin/linux-x86_64/release
+
+Q7: What environment variables should I be aware of?
+A7: There are a few environment variables provided by PVCAM or SDK. They all
+   start with PVCAM_ prefix. See the list with command:
+    $ env | grep PVCAM_
+
+   SDK currently defines one environment variable only.
+
+   PVCAM_SDK_PATH - Defines path into sdk folder that can be used by developers
+        to easily configure projects (if not using pkg-config).

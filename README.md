@@ -2,6 +2,7 @@
 
 PyVCAM Wrapper is a Python3.X wrapper for the PVCAM SDK.
 This project is a fork of the [PyVCAM Wrapper](https://github.com/Photometrics/PyVCAM) developed by the [Teledyne Photometrics](https://github.com/Photometrics) team and is dependent on PyVCAM v2.1.5.
+The PVCAM SDK is developed solely by Teledyne Photometrics.
 
 ## Getting Started
 
@@ -56,7 +57,7 @@ verbosity:
 ### ARTIQ Experiment Setup
 
 * In your `device_db.py` file, you will need to specify a remote port that your environment will connect to, as specified in the [NDSP](https://m-labs.hk/artiq/manual/developing_a_ndsp.html) guide.
-```
+```python
 device_db = {
     "pyvcam": {
         "type": "controller",
@@ -68,7 +69,7 @@ device_db = {
 }
 ```
 * In every ARTIQ experiment, you will need to initialize a pyvcam device within the `build` function.
-```
+```python
 def build(self):
     self.setattr_device("pyvcam")
 ```
