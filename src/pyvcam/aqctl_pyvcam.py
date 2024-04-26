@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 """
-__main__.py
-
 Implement ARTIQ Network Device Support Package (NDSP) to support Teledyne PrimeBSI camera integration into ARTIQ experiment.
 
 Kevin Chen

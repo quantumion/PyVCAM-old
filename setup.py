@@ -98,18 +98,24 @@ ext_modules = [Extension('pyvcam.pvc',
                          libraries=libs)]
 
 setup(name='pyvcam',
-    #   version='2.1.5',
-      author='Teledyne Photometrics, QuantumIon',
-      author_email='Steve.Bellinger@Teledyne.com, k377chen@uwaterloo.ca, cepstein@uwaterloo.ca',
-      url='https://github.com/quantumion/PyVCAM',
-      description='Python wrapper for PVCAM functionality integrated into ARTIQ experiment with the usage of NDSPs.',
-      packages=['pyvcam'],
-      package_dir={'pyvcam': 'src/pyvcam'},
-      py_modules=['pyvcam.constants'],
-      cmdclass={'build_ext': build_ext},
-      setup_requires=['numpy'],
-      install_requires=['sipyco@git+https://github.com/m-labs/sipyco.git', 'numpy'],
-      python_requires='>=3.10',
-      ext_modules=ext_modules)
+    version='1.0.0',
+    author='Teledyne Photometrics, QuantumIon',
+    author_email='Steve.Bellinger@Teledyne.com, k377chen@uwaterloo.ca, cepstein@uwaterloo.ca',
+    url='https://github.com/quantumion/PyVCAM',
+    description='Python wrapper for PVCAM functionality integrated into ARTIQ experiment with the usage of NDSPs.',
+    packages=['pyvcam'],
+    package_dir={'pyvcam': 'src/pyvcam'},
+    py_modules=['pyvcam.constants'],
+    cmdclass={'build_ext': build_ext},
+    setup_requires=['numpy'],
+    install_requires=['sipyco@git+https://github.com/m-labs/sipyco.git', 'numpy'],
+    entry_points={
+        "console_scripts": [
+            "aqctl_pyvcam = pyvcam.aqctl_pyvcam:main",
+        ],
+    },
+    python_requires='>=3.10',
+    ext_modules=ext_modules,
+)
 
 print('\n\n*************** Finished ***************\n')

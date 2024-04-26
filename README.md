@@ -1,6 +1,7 @@
 # [ARTIQ](http://m-labs.hk/experiment-control/artiq/) [Network Device Support Package (NDSP)](https://m-labs.hk/artiq/manual/developing_a_ndsp.html) Integration for the [PyVCAM Wrapper](https://github.com/Photometrics/PyVCAM)
 
-PyVCAM Wrapper is a Python3.X wrapper for the PVCAM SDK. This project is a fork of the [PyVCAM Wrapper](https://github.com/Photometrics/PyVCAM) developed by the [Teledyne Photometrics](https://github.com/Photometrics) team and is dependent on PyVCAM v2.1.5.
+PyVCAM Wrapper is a Python3.X wrapper for the PVCAM SDK.
+This project is a fork of the [PyVCAM Wrapper](https://github.com/Photometrics/PyVCAM) developed by the [Teledyne Photometrics](https://github.com/Photometrics) team and is dependent on PyVCAM v2.1.5.
 
 ## Getting Started
 
@@ -18,18 +19,39 @@ Follow the instructions below to get PyVCAM up and running on your machine for d
 
 ### Initial Setup
 
-1. Clone this repository into your Projects folder with the command `git clone git@github.com:quantumion/PyVCAM.git`.
-* **Note:** The following steps (2-3) may be skipped if installation is to be done in the default/user specified environment - virtual environment usage is not a requirement.
-2. Navigate into your PyVCAM folder and create a virtual environment with `virtualenv venv`. 
-3. Activate your virtual environment with `source venv/bin/activate`.
-4. Install PyVCAM by running `pip install .`.
+1. Clone this repository into your Projects folder :
+   ```sh
+   $ git clone git@github.com:quantumion/PyVCAM.git
+   ```
+ * **Note:** The following steps may be skipped if installation is to be done in the default/user specified environment - virtual environment usage is not a requirement.
+2. Install `PyVCAM` in a virtual environment:
+    ```sh
+    $ cd PyVCAM
+    $ virtualenv venv
+    $ source venv/bin/activate
+    $ pip install
+    ```
 
 ### Controller Activation
 
-* Run `python -m pyvcam`.
-* Add flags to specify parameters. Add `-h` to see a list of flags.
-* To specify a port, run with `python -m pyvcam -p <port number>`. The default port is `3249`.
-    * **NOTE:** You need to modify your `device_db.py` file if you have changed the port number.
+```sh
+$ aqctl_pyvcam -h
+usage: aqctl_pyvcam [-h] [--bind BIND] [--no-localhost-bind] [-p PORT] [-v] [-q]
+
+PyVCAM controller. Use this controller to drive the Teledyne PrimeBSI camera. See documentation at https://github.com/Photometrics/PyVCAM
+
+options:
+  -h, --help            show this help message and exit
+
+network server:
+  --bind BIND           additional hostname or IP address to bind to; use '*' to bind to all interfaces (default: [])
+  --no-localhost-bind   do not implicitly also bind to localhost addresses
+  -p PORT, --port PORT  TCP port to listen on (default: 3249)
+
+verbosity:
+  -v, --verbose         increase logging level
+  -q, --quiet           decrease logging level
+```
     
 ### ARTIQ Experiment Setup
 
@@ -40,7 +62,7 @@ device_db = {
         "type": "controller",
         "host": "::1", # Change this for a different host
         "port": 3249, # Change this for a different port number
-        "command": "python -m pyvcam -p {port}"
+        "command": "aqctl_pyvcam -p {port}"
     }
     ... # The rest of your device_db
 }
@@ -62,7 +84,6 @@ def build(self):
 |-------------------|---------------------------------|----------------------------------|
 | `print(cam.gain)` | `print(self.pyvcam.get_gain())` | Prints current gain value as int |
 | `cam.gain = 1`    | `self.pyvcam.set_gain(1)`       | Sets gain value to 1             |
-
 
 ## How to use the wrapper
 
@@ -88,7 +109,6 @@ This prints the current settings of the camera.
 | `print(cam.readout_port)`      | `print(self.pyvcam.get_readout_port())`      |
 | `print(cam.speed_table_index)` | `print(self.pyvcam.get_speed_table_index())` |
 | `print(cam.gain)`              | `print(self.pyvcam.get_gain())`              |
-
 
 #### Changing Settings Example
 
