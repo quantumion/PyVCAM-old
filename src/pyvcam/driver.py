@@ -27,7 +27,8 @@ class PyVCAM:
         Creates camera object.
         **NOTE**: This does not open the camera. User has to call :func:`open` either in controller or experiment.
         """
-        pvc.init_pvcam()
+        if not pvc.init_pvcam():
+            raise RuntimeError("pvcam did not initialize properly")
         self.cam = [cam for cam in Camera.detect_camera()][0]
 
     def __del__(self) -> None:
