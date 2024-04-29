@@ -1,0 +1,16 @@
+services:
+  pyvcam:
+    container_name: pyvcam
+    # restart: always
+    ports:
+      - 3249:3249
+    networks:
+      - camera
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+      # target: build
+    entrypoint: ["aqctl_pyvcam", "-p", "3249", "--bind", "*"]
+
+networks:
+  camera:
