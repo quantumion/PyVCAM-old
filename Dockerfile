@@ -1,42 +1,41 @@
-FROM python:3.12-rc-slim-bookworm as build
-
+FROM python:3.12-rc-slim-bookworm as system
 SHELL ["/bin/bash", "-c"]
-
 ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-# install base tools, pre-install dependencies to take advantage of caching
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends \
+# install base tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
     sudo \
-    git \
-    build-essential \
-    gcc-multilib \
-    g++-multilib \
-    pkg-config \
-    libtiff5-dev \
-    libusb-1.0-0
-# for some reason, pre-installing dkms breaks automated installation pipeline
-# installation of dkms delegated to the pvcam installation scripts
+    git \ 
+    && apt-get clean
+
+# set up non-root user
+RUN adduser --disabled-password --uid 1001 --ingroup sudo app && \
+    usermod -aG users app && \
+    echo "app ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+USER app
+ENV PATH="/home/app/.local/bin:$PATH"
+
+RUN python -m pip install --user --upgrade pip
 
 # install pvcam and sdk
+FROM system as build
 WORKDIR /app
-COPY ./pvcam .
+COPY ./pvcam ./pvcam
 
-WORKDIR /app/app
+WORKDIR /app/pvcam/app
 RUN yes Y | ./pvcam__install_helper-Ubuntu.sh
 
-WORKDIR /app/sdk
+WORKDIR /app/pvcam/sdk
 RUN yes Y | ./pvcam-sdk__install_helper-Ubuntu.sh
 ENV PVCAM_SDK_PATH=/opt/pvcam/sdk
-
-# upgrade pip
-WORKDIR /app
-RUN python -m pip install --upgrade pip
 
 # build python application
 FROM build
 WORKDIR /app
 COPY . .
-RUN python -m pip install .
+RUN python -m pip install --user .
 
-ENTRYPOINT aqctl_pyvcam -p 3249 --bind *
+ENTRYPOINT ["aqctl_pyvcam"]
+CMD ["-p", "3249", "--bind", "*"]
