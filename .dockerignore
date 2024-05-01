@@ -12,4 +12,5 @@
 **/directories
 **/docs
 **/pyvcam.egg-info
-**/.git**/tests
+**/.git
+**/tests
