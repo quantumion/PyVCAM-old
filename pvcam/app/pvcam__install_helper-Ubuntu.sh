@@ -2,7 +2,7 @@
 
 if [ ${EUID} -eq 0 ]; then
     echo "Please do not run as root"
-    # exit 1 # removed for container setup
+    exit 1
 fi
 
 if [ ! -x "$(command -v apt-get)" ]; then
