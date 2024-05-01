@@ -5,3 +5,4 @@ pyvcam.egg-info
 
 # file types
 *.so
+*.log
