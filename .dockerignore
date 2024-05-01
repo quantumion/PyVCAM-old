@@ -1,0 +1,15 @@
+# files
+**/.DS_Store
+**/.gitignore
+
+# file types
+**/*.so
+**/*.log
+
+# directories
+**/venv
+**/build
+**/directories
+**/docs
+**/pyvcam.egg-info
+**/.git**/tests
