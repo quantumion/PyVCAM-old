@@ -1,5 +1,5 @@
-FROM python:3.12-rc-slim-bookworm as system
-SHELL ["/bin/bash", "-c"]
+FROM ubuntu:22.04 as system
+SHELL ["/bin/sh", "-c"]
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -7,7 +7,9 @@ ENV PYTHONUNBUFFERED 1
 # install base tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
     sudo \
-    git \ 
+    git \
+    python3-pip \
+    python3-dev \
     && apt-get clean
 
 # set up non-root user
@@ -17,7 +19,7 @@ RUN adduser --disabled-password --uid 1001 --ingroup sudo app && \
 USER app
 ENV PATH="/home/app/.local/bin:$PATH"
 
-RUN python -m pip install --user --upgrade pip
+RUN python3 -m pip install --user --upgrade pip
 
 # install pvcam and sdk
 FROM system as build
@@ -35,7 +37,7 @@ ENV PVCAM_SDK_PATH=/opt/pvcam/sdk
 FROM build
 WORKDIR /app
 COPY . .
-RUN python -m pip install --user .
+RUN python3 -m pip install --user .
 
 ENTRYPOINT ["aqctl_pyvcam"]
 CMD ["-p", "3249", "--bind", "*"]
