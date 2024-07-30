@@ -6,10 +6,10 @@ ENV PYTHONUNBUFFERED 1
 
 # install base tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    sudo=1.9.15 \
-    git=1:2.39.2-1.1 \
-    python3-pip==24.0 \
-    python3-dev==3.12 \
+    sudo=1.9.9-1ubuntu2.4 \
+    git=1:2.34.1-1ubuntu1.11 \
+    python3-pip=22.0.2+dfsg-1ubuntu0.4 \
+    python3-dev=3.10.6-1~22.04 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # set up non-root user
