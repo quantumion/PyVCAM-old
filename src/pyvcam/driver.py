@@ -10,17 +10,21 @@ QuantumIon
 University of Waterloo
 """
 
+from typing import NoReturn
+
+from pyvcam import constants as const
 from pyvcam import pvc  # type: ignore
 from pyvcam.camera import Camera
-from pyvcam import constants as const
-from typing import NoReturn
 
 
 class PyVCAM:
     """
     Teledyne PrimeBSI camera control.
     """
-    WAIT_FOREVER = -1  #: Negative values wait forever in functions with :code:`timeout` parameter.
+
+    WAIT_FOREVER = (
+        -1
+    )  #: Negative values wait forever in functions with :code:`timeout` parameter.
 
     def __init__(self) -> None:
         """
@@ -46,8 +50,10 @@ class PyVCAM:
 
         :raise NotImplementedError: User should not explicitly call this function.
         """
-        raise NotImplementedError("""Function should not be explicitly called;
-                                     already called as needed during initialization.""")
+        raise NotImplementedError(
+            """Function should not be explicitly called;
+                                     already called as needed during initialization."""
+        )
 
     def open(self) -> None:
         """
@@ -69,7 +75,9 @@ class PyVCAM:
         """
         self.cam.close()
 
-    def get_frame(self, exp_time: int | None = None, timeout: int | None = WAIT_FOREVER) -> list[list[int]]:
+    def get_frame(
+        self, exp_time: int | None = None, timeout: int | None = WAIT_FOREVER
+    ) -> list[list[int]]:
         """
         Gets a 2D numpy array of pixel data from a single snap image.
 
@@ -119,7 +127,9 @@ class PyVCAM:
         """
         self.cam.finish()
 
-    def get_param(self, param_id: int, param_attr: int | None = const.ATTR_CURRENT) -> int | float:
+    def get_param(
+        self, param_id: int, param_attr: int | None = const.ATTR_CURRENT
+    ) -> int | float:
         """
         Gets the current value of a specified parameter. Usually not called directly since the getters/setters
         will handle most cases of getting camera attributes. However, not all cases may be covered by the
@@ -208,7 +218,9 @@ class PyVCAM:
         :return: Current exposure mode of the camera.
         :rtype: str
         """
-        return list(self.exp_modes().keys())[list(self.exp_modes().values()).index(self.cam.exp_mode)]
+        return list(self.exp_modes().keys())[
+            list(self.exp_modes().values()).index(self.cam.exp_mode)
+        ]
 
     def set_exp_mode(self, key_or_value: int | str) -> None:
         """
@@ -247,7 +259,9 @@ class PyVCAM:
         :return: Current exposure resolution of a camera.
         :rtype: str
         """
-        return list(self.exp_resolutions().keys())[list(self.exp_resolutions().values()).index(self.cam.exp_res)]
+        return list(self.exp_resolutions().keys())[
+            list(self.exp_resolutions().values()).index(self.cam.exp_res)
+        ]
 
     def set_exp_res(self, key_or_value: int | str) -> None:
         """
@@ -379,8 +393,13 @@ class PyVCAM:
         """
         return self.cam.serial_no
 
-    def get_sequence(self, num_frames: int, exp_time: int | None = None, timeout: int | None = WAIT_FOREVER,
-                     interval: int | None = None) -> list[list[list[int]]]:
+    def get_sequence(
+        self,
+        num_frames: int,
+        exp_time: int | None = None,
+        timeout: int | None = WAIT_FOREVER,
+        interval: int | None = None,
+    ) -> list[list[list[int]]]:
         """
         Gets a 3D numpy array of pixel data by calling the :func:`get_frame` function in rapid-succession
         for the specified number of frames.
@@ -402,8 +421,14 @@ class PyVCAM:
         """
         return self.cam.get_sequence(num_frames, exp_time, timeout, interval)
 
-    def get_vtm_sequence(self, time_list: list[int], exp_res: int, num_frames: int, timeout: int | None = WAIT_FOREVER,
-                         interval: int | None = None) -> list[list[list[int]]]:
+    def get_vtm_sequence(
+        self,
+        time_list: list[int],
+        exp_res: int,
+        num_frames: int,
+        timeout: int | None = WAIT_FOREVER,
+        interval: int | None = None,
+    ) -> list[list[list[int]]]:
         """
         A modified :func:`get_sequence` function to be used for Variable Timed Mode.
         Before calling it, set the camera's exposure mode to "Variable Timed".
@@ -426,10 +451,16 @@ class PyVCAM:
         :raise ValueError: If invalid parameters are supplied.
         :raise MemoryError: If unable to allocate memory for the camera frame(s).
         """
-        return self.cam.get_vtm_sequence(time_list, exp_res, num_frames, timeout, interval)
+        return self.cam.get_vtm_sequence(
+            time_list, exp_res, num_frames, timeout, interval
+        )
 
-    def start_live(self, exp_time: int | None = None, buffer_frame_count: int | None = 16,
-                   stream_to_disk_path: str | None = None) -> None:
+    def start_live(
+        self,
+        exp_time: int | None = None,
+        buffer_frame_count: int | None = 16,
+        stream_to_disk_path: str | None = None,
+    ) -> None:
         """
         Sets up a circular buffer acquisition.
         This must be called before :func:`poll_frame`.
@@ -447,7 +478,9 @@ class PyVCAM:
         """
         self.cam.start_live(exp_time, buffer_frame_count, stream_to_disk_path)
 
-    def start_seq(self, exp_time: int | None = None, num_frames: int | None = 1) -> None:
+    def start_seq(
+        self, exp_time: int | None = None, num_frames: int | None = 1
+    ) -> None:
         """
         Sets up a non-circular buffer acquisition.
         This must be called before :func:`poll_frame`.
@@ -462,8 +495,12 @@ class PyVCAM:
         """
         self.cam.start_seq(exp_time, num_frames)
 
-    def poll_frame(self, timeout: int | None = WAIT_FOREVER, oldest_frame: bool | None = True,
-                   copy_data: bool | None = True) -> tuple[dict, float, int]:
+    def poll_frame(
+        self,
+        timeout: int | None = WAIT_FOREVER,
+        oldest_frame: bool | None = True,
+        copy_data: bool | None = True,
+    ) -> tuple[dict, float, int]:
         """
         Returns a single frame as a dictionary with optional meta data if available.
         This method must be called after either :func:`start_live` or :func:`start_seq` and
@@ -691,7 +728,9 @@ class PyVCAM:
         """
         return self.cam.get_post_processing_param(feature_name, param_name)
 
-    def set_post_processing_param(self, feature_name: str, param_name: str, value: int) -> None:
+    def set_post_processing_param(
+        self, feature_name: str, param_name: str, value: int
+    ) -> None:
         """
         Sets the value of a specified post-processing parameter.
 
@@ -759,7 +798,9 @@ class PyVCAM:
 
         :raise AttributeError: This function is not supported by the Prime BSI Camera.
         """
-        return list(self.centroids_modes().keys())[list(self.centroids_modes().values()).index(self.cam.centroids_mode)]
+        return list(self.centroids_modes().keys())[
+            list(self.centroids_modes().values()).index(self.cam.centroids_mode)
+        ]
 
     def set_centroids_mode(self, key_or_value: int | str) -> None:
         """
@@ -787,7 +828,9 @@ class PyVCAM:
         :return: Current clear mode of a camera.
         :rtype: str
         """
-        return list(self.clear_modes().keys())[list(self.clear_modes().values()).index(self.cam.clear_mode)]
+        return list(self.clear_modes().keys())[
+            list(self.clear_modes().values()).index(self.cam.clear_mode)
+        ]
 
     def set_clear_mode(self, key_or_value: int | str) -> None:
         """
@@ -826,7 +869,9 @@ class PyVCAM:
         :return: Current exposure out mode of a camera.
         :rtype: str
         """
-        return list(self.exp_out_modes().keys())[list(self.exp_out_modes().values()).index(self.cam.exp_out_mode)]
+        return list(self.exp_out_modes().keys())[
+            list(self.exp_out_modes().values()).index(self.cam.exp_out_mode)
+        ]
 
     def set_exp_out_mode(self, key_or_value: int | str) -> None:
         """
@@ -868,7 +913,9 @@ class PyVCAM:
         :return: Current programmable scan mode of a camera.
         :rtype: str
         """
-        return list(self.prog_scan_modes().keys())[list(self.prog_scan_modes().values()).index(self.cam.prog_scan_mode)]
+        return list(self.prog_scan_modes().keys())[
+            list(self.prog_scan_modes().values()).index(self.cam.prog_scan_mode)
+        ]
 
     def set_prog_scan_mode(self, key_or_value: int | str) -> None:
         """
@@ -905,7 +952,9 @@ class PyVCAM:
         :return: Current programmable scan direction of a camera.
         :rtype: str
         """
-        return list(self.prog_scan_dirs().keys())[list(self.prog_scan_dirs().values()).index(self.cam.prog_scan_dir)]
+        return list(self.prog_scan_dirs().keys())[
+            list(self.prog_scan_dirs().values()).index(self.cam.prog_scan_dir)
+        ]
 
     def set_prog_scan_dir(self, key_or_value: int | str) -> None:
         """
