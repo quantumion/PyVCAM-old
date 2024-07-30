@@ -6,11 +6,11 @@ ENV PYTHONUNBUFFERED 1
 
 # install base tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    sudo \
-    git \
-    python3-pip \
-    python3-dev \
-    && apt-get clean
+    sudo=1.9.15 \
+    git=1:2.39.2-1.1 \
+    python3-pip==24.0 \
+    python3-dev==3.12 \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # set up non-root user
 RUN adduser --disabled-password --uid 1001 --ingroup sudo app && \
@@ -19,7 +19,7 @@ RUN adduser --disabled-password --uid 1001 --ingroup sudo app && \
 USER app
 ENV PATH="/home/app/.local/bin:$PATH"
 
-RUN python3 -m pip install --user --upgrade pip
+RUN python3 -m pip install --no-cache-dir --user --upgrade pip==24.0
 
 # install pvcam and sdk
 FROM system as build
@@ -27,6 +27,7 @@ WORKDIR /app
 COPY ./pvcam ./pvcam
 
 WORKDIR /app/pvcam/app
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN yes Y | ./pvcam__install_helper-Ubuntu.sh
 
 WORKDIR /app/pvcam/sdk
@@ -37,7 +38,7 @@ ENV PVCAM_SDK_PATH=/opt/pvcam/sdk
 FROM build
 WORKDIR /app
 COPY . .
-RUN python3 -m pip install --user .
+RUN python3 -m pip install --user --no-cache-dir .
 
 ENTRYPOINT ["aqctl_pyvcam"]
 CMD ["-p", "3249", "--bind", "*"]
