@@ -10,7 +10,7 @@ QuantumIon
 University of Waterloo
 """
 
-from typing import NoReturn
+from typing import NoReturn, Union
 
 from pyvcam import constants as const
 from pyvcam import pvc  # type: ignore
@@ -76,7 +76,9 @@ class PyVCAM:
         self.cam.close()
 
     def get_frame(
-        self, exp_time: int | None = None, timeout: int | None = WAIT_FOREVER
+        self,
+        exp_time: Union[int, None] = None,
+        timeout: Union[int, None] = WAIT_FOREVER,
     ) -> list[list[int]]:
         """
         Gets a 2D numpy array of pixel data from a single snap image.
@@ -128,8 +130,8 @@ class PyVCAM:
         self.cam.finish()
 
     def get_param(
-        self, param_id: int, param_attr: int | None = const.ATTR_CURRENT
-    ) -> int | float:
+        self, param_id: int, param_attr: Union[int, None] = const.ATTR_CURRENT
+    ) -> Union[int, float]:
         """
         Gets the current value of a specified parameter. Usually not called directly since the getters/setters
         will handle most cases of getting camera attributes. However, not all cases may be covered by the
@@ -150,7 +152,7 @@ class PyVCAM:
         """
         return self.cam.get_param(param_id, param_attr)
 
-    def set_param(self, param_id: int, value: int | float) -> None:
+    def set_param(self, param_id: int, value: Union[int, float]) -> None:
         """
         Sets a specified setting of a camera to a specified value. Usually not called directly since the getters/setters
         will handle most cases of getting camera attributes. However, not all cases may be covered by the
@@ -218,11 +220,15 @@ class PyVCAM:
         :return: Current exposure mode of the camera.
         :rtype: str
         """
+
+        if isinstance(self.cam.exp_mode, str):
+            raise KeyError("exposure mode must be an int")
+
         return list(self.exp_modes().keys())[
             list(self.exp_modes().values()).index(self.cam.exp_mode)
         ]
 
-    def set_exp_mode(self, key_or_value: int | str) -> None:
+    def set_exp_mode(self, key_or_value: Union[int, str]) -> None:
         """
         Changes exposure mode. Exact case matching is **required**.
 
@@ -259,11 +265,15 @@ class PyVCAM:
         :return: Current exposure resolution of a camera.
         :rtype: str
         """
+
+        if isinstance(self.cam.exp_res, str):
+            raise KeyError("exposure resolution must be an int")
+
         return list(self.exp_resolutions().keys())[
             list(self.exp_resolutions().values()).index(self.cam.exp_res)
         ]
 
-    def set_exp_res(self, key_or_value: int | str) -> None:
+    def set_exp_res(self, key_or_value: Union[int, str]) -> None:
         """
         Changes exposure resolution. Exact case matching is **required**.
 
@@ -396,9 +406,9 @@ class PyVCAM:
     def get_sequence(
         self,
         num_frames: int,
-        exp_time: int | None = None,
-        timeout: int | None = WAIT_FOREVER,
-        interval: int | None = None,
+        exp_time: Union[int, None] = None,
+        timeout: Union[int, None] = WAIT_FOREVER,
+        interval: Union[int, None] = None,
     ) -> list[list[list[int]]]:
         """
         Gets a 3D numpy array of pixel data by calling the :func:`get_frame` function in rapid-succession
@@ -426,8 +436,8 @@ class PyVCAM:
         time_list: list[int],
         exp_res: int,
         num_frames: int,
-        timeout: int | None = WAIT_FOREVER,
-        interval: int | None = None,
+        timeout: Union[int, None] = WAIT_FOREVER,
+        interval: Union[int, None] = None,
     ) -> list[list[list[int]]]:
         """
         A modified :func:`get_sequence` function to be used for Variable Timed Mode.
@@ -457,9 +467,9 @@ class PyVCAM:
 
     def start_live(
         self,
-        exp_time: int | None = None,
-        buffer_frame_count: int | None = 16,
-        stream_to_disk_path: str | None = None,
+        exp_time: Union[int, None] = None,
+        buffer_frame_count: Union[int, None] = 16,
+        stream_to_disk_path: Union[str, None] = None,
     ) -> None:
         """
         Sets up a circular buffer acquisition.
@@ -479,7 +489,7 @@ class PyVCAM:
         self.cam.start_live(exp_time, buffer_frame_count, stream_to_disk_path)
 
     def start_seq(
-        self, exp_time: int | None = None, num_frames: int | None = 1
+        self, exp_time: Union[int, None] = None, num_frames: Union[int, None] = 1
     ) -> None:
         """
         Sets up a non-circular buffer acquisition.
@@ -497,9 +507,9 @@ class PyVCAM:
 
     def poll_frame(
         self,
-        timeout: int | None = WAIT_FOREVER,
-        oldest_frame: bool | None = True,
-        copy_data: bool | None = True,
+        timeout: Union[int, None] = WAIT_FOREVER,
+        oldest_frame: Union[bool, None] = True,
+        copy_data: Union[bool, None] = True,
     ) -> tuple[dict, float, int]:
         """
         Returns a single frame as a dictionary with optional meta data if available.
@@ -558,7 +568,7 @@ class PyVCAM:
         """
         self.cam.set_roi(s1, p1, width, height)
 
-    def shape(self, roi_index: int | None = 0) -> tuple[int, int]:
+    def shape(self, roi_index: Union[int, None] = 0) -> tuple[int, int]:
         """
         Returns the reshape factor to be used when acquiring a ROI. This is equivalent to an acquired image's shape.
 
@@ -584,14 +594,14 @@ class PyVCAM:
         """
         return self.cam.read_enum(param_id)
 
-    def binning(self) -> tuple[int, int]:
+    def binning(self) -> Union[tuple[int, int], int]:
         """
         :return: Current serial and parallel binning values.
         :rtype: tuple[int, int]
         """
         return self.cam.binning
 
-    def set_binning(self, value: tuple[int, int] | int) -> None:
+    def set_binning(self, value: Union[tuple[int, int], int]) -> None:
         """
         Changes binning. A single value will set a square binning.
         Binning cannot be changed directly on the camera, but is used for setting up
@@ -798,11 +808,15 @@ class PyVCAM:
 
         :raise AttributeError: This function is not supported by the Prime BSI Camera.
         """
+
+        if isinstance(self.cam.centroids_mode, str):
+            raise KeyError("centroids mode must be an int")
+
         return list(self.centroids_modes().keys())[
             list(self.centroids_modes().values()).index(self.cam.centroids_mode)
         ]
 
-    def set_centroids_mode(self, key_or_value: int | str) -> None:
+    def set_centroids_mode(self, key_or_value: Union[int, str]) -> None:
         """
         Attempts to modify the current centroid mode, which is not supported by the Prime BSI Camera.
 
@@ -828,11 +842,15 @@ class PyVCAM:
         :return: Current clear mode of a camera.
         :rtype: str
         """
+
+        if isinstance(self.cam.clear_mode, str):
+            raise KeyError("clear mode must be an int")
+
         return list(self.clear_modes().keys())[
             list(self.clear_modes().values()).index(self.cam.clear_mode)
         ]
 
-    def set_clear_mode(self, key_or_value: int | str) -> None:
+    def set_clear_mode(self, key_or_value: Union[int, str]) -> None:
         """
         Changes clear mode. Exact case matching is **required**.
 
@@ -869,11 +887,15 @@ class PyVCAM:
         :return: Current exposure out mode of a camera.
         :rtype: str
         """
+
+        if isinstance(self.cam.exp_out_mode, str):
+            raise KeyError("exposure out mode must be an int")
+
         return list(self.exp_out_modes().keys())[
             list(self.exp_out_modes().values()).index(self.cam.exp_out_mode)
         ]
 
-    def set_exp_out_mode(self, key_or_value: int | str) -> None:
+    def set_exp_out_mode(self, key_or_value: Union[int, str]) -> None:
         """
         Changes exposure out mode. Exact case matching is **required**.
 
@@ -913,11 +935,15 @@ class PyVCAM:
         :return: Current programmable scan mode of a camera.
         :rtype: str
         """
+
+        if isinstance(self.cam.prog_scan_mode, str):
+            raise KeyError("programmable scan mode must be an int")
+
         return list(self.prog_scan_modes().keys())[
             list(self.prog_scan_modes().values()).index(self.cam.prog_scan_mode)
         ]
 
-    def set_prog_scan_mode(self, key_or_value: int | str) -> None:
+    def set_prog_scan_mode(self, key_or_value: Union[int, str]) -> None:
         """
         Changes programmable scan mode. Exact case matching is **required**.
 
@@ -952,11 +978,15 @@ class PyVCAM:
         :return: Current programmable scan direction of a camera.
         :rtype: str
         """
+
+        if isinstance(self.cam.prog_scan_dir, str):
+            raise KeyError("programmable scan direction must be an int")
+
         return list(self.prog_scan_dirs().keys())[
             list(self.prog_scan_dirs().values()).index(self.cam.prog_scan_dir)
         ]
 
-    def set_prog_scan_dir(self, key_or_value: int | str) -> None:
+    def set_prog_scan_dir(self, key_or_value: Union[int, str]) -> None:
         """
         Changes programmable scan mode. Exact case matching is **required**.
 

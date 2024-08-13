@@ -18,13 +18,16 @@
 import os
 import re
 from datetime import date
+from typing import Any, AnyStr, Dict, List, Match, Tuple, Union
+
+from _typeshed import SupportsNext
 
 pvcam_sdk_path = os.environ["PVCAM_SDK_PATH"]
 pvcam = r"{}inc/pvcam.h".format(pvcam_sdk_path)
 constants = r"./pyvcam/constants.py"
 
 
-def define_writer(match):
+def define_writer(match: Match) -> Tuple[Tuple[AnyStr, ...], Tuple[AnyStr, ...]]:
     """Constructs a string representing defines in header files.
 
     Parameters:
@@ -35,7 +38,10 @@ def define_writer(match):
     return match.group("var"), match.group("val")
 
 
-def enum_writer(match, infile):
+def enum_writer(
+    match: Match,
+    infile: SupportsNext[str],
+) -> Tuple[Tuple[AnyStr, ...], List]:
     """Constructs a tuple containing the data to represent enums in python.
 
     The tuple will have the form (<String>, <List>), where the string will
@@ -90,7 +96,7 @@ def enum_writer(match, infile):
     return (enum_group, enums)
 
 
-def struct_writer(infile):
+def struct_writer(infile: SupportsNext[str]) -> Tuple[Union[str, Any], List]:
     """Builds a tuple containing the data to represent structs in python.
 
     Parameters:
@@ -155,10 +161,13 @@ def struct_writer(infile):
     line = remove_comment(line, infile)
     struct_name = r"^(?P<name>\w+);$"
     name = re.search(struct_name, line)
+
+    assert name is not None
+
     return name.group("name"), fields
 
 
-def remove_comment(to_remove, infile):
+def remove_comment(to_remove: str, infile: SupportsNext[str]) -> str:
     """Removes trailing block comments from the end of a string.
 
     Parameters:
@@ -186,7 +195,7 @@ def remove_comment(to_remove, infile):
     return removed
 
 
-def parse_line(line, infile, collection):
+def parse_line(line: str, infile: SupportsNext[str], collection: Dict) -> None:
     """Determines if a line is a define or a start of an enum or struct.
 
     After determining the structure of a current line, parse_line will then
@@ -230,14 +239,15 @@ if __name__ == "__main__":
 #        additional data is needed.
 #
 # Bugs: [See constants_generator.py]
-###############################################################################\n""".format(
+###############################################################################
+""".format(
         date.today()
     )
 
-    defines = []
-    macros = []
-    enums = []
-    structs = []
+    defines: List = []
+    macros: List[Tuple[Tuple[Union[str, Any], str], List]] = []
+    enums: List[Tuple[Tuple[Union[str, Any], str], List]] = []
+    structs: List[Tuple[Union[str, Any], List]] = []
     collection = {
         "defines": defines,
         "macros": macros,

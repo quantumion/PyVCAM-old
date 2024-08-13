@@ -20,7 +20,7 @@ from pyvcam.driver import PyVCAM
 logger = logging.getLogger(__name__)
 
 
-def get_argparser():
+def get_argparser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="""PyVCAM controller. Use this controller to drive the Teledyne PrimeBSI camera.
                                      See documentation at https://github.com/Photometrics/PyVCAM"""
@@ -30,7 +30,7 @@ def get_argparser():
     return parser
 
 
-def main():
+def main() -> None:
     args = get_argparser().parse_args()
     common_args.init_logger_from_args(args)
     camera = PyVCAM()
