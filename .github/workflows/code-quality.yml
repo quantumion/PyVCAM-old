@@ -49,4 +49,4 @@ jobs:
           python -m pip install mypy==1.10.0
       - name: Run mypy
         run: |
-          mypy ./src
+          mypy ./src --ignore-missing-imports

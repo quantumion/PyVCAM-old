@@ -1,15 +1,14 @@
 import os
 import time
 from copy import deepcopy
-from typing_extensions import Self
+from typing import Any, Dict, Generator, List, Optional, Tuple, Union
 
 import numpy as np
 import numpy.typing as npt
+from typing_extensions import Self
 
 from pyvcam import constants as const
 from pyvcam import pvc  # type: ignore
-
-from typing import Any, Dict, Generator, List, Optional, Tuple, Union
 
 
 class Camera:
