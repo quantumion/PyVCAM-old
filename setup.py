@@ -98,7 +98,7 @@ ext_modules = [Extension('pyvcam.pvc',
                          libraries=libs)]
 
 setup(name='pyvcam',
-    #   version='2.1.5',
+      version='1.0.1',
       author='Teledyne Photometrics, QuantumIon',
       author_email='Steve.Bellinger@Teledyne.com, k377chen@uwaterloo.ca, cepstein@uwaterloo.ca',
       url='https://github.com/quantumion/PyVCAM',
@@ -108,7 +108,7 @@ setup(name='pyvcam',
       py_modules=['pyvcam.constants'],
       cmdclass={'build_ext': build_ext},
       setup_requires=['numpy'],
-      install_requires=['sipyco@git+https://github.com/m-labs/sipyco.git', 'numpy'],
+      install_requires=['sipyco@git+https://github.com/m-labs/sipyco.git@v1.8'],
       python_requires='>=3.10',
       ext_modules=ext_modules)
 
