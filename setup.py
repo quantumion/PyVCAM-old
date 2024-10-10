@@ -107,7 +107,7 @@ setup(name='pyvcam',
       package_dir={'pyvcam': 'src/pyvcam'},
       py_modules=['pyvcam.constants'],
       cmdclass={'build_ext': build_ext},
-      setup_requires=['numpy'],
+      setup_requires=['numpy==2.1.0'],
       install_requires=['sipyco@git+https://github.com/m-labs/sipyco.git@v1.8'],
       python_requires='>=3.10',
       ext_modules=ext_modules)
