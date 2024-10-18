@@ -14,7 +14,7 @@ nav:
  - Welcome: index.md
  - Installation:
     - Server Program: setup/installation.md
-#     - ARTIQ Device Database: setup/device_db.md
+    - ARTIQ Device Database: setup/device_db.md
 #  - Usage:
 #     - Invoking the Server: usage/server.md
 #     - Using the Controller: usage/controller.md
