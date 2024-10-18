@@ -17,7 +17,7 @@ nav:
     - ARTIQ Device Database: setup/device_db.md
  - Usage:
     - Invoking the Server: usage/server.md
-#     - Using the Controller: usage/controller.md
+    - Using the Controller: usage/controller.md
 #  - API Reference:
 #     - Device Driver: api_reference/driver.md
 #     - Device State: api_reference/states.md
