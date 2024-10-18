@@ -1,0 +1,79 @@
+# Adapted from https://github.com/OpenQuantumDesign/midstack/blob/main/mkdocs.yml
+
+site_name: PyVCAM
+site_description: PVCAM Python Wrapper ARTIQ Network Device Support Package
+#site_url: http://0.0.0.0:8000
+repo_name: quantumion/PyVCAM
+repo_url: https://github.com/quantumion/PyVCAM
+
+# copyright:
+
+use_directory_urls: true
+
+nav:
+ - Welcome: index.md
+#  - Installation:
+#     - Server Program: setup/installation.md
+#     - ARTIQ Device Database: setup/device_db.md
+#  - Usage:
+#     - Invoking the Server: usage/server.md
+#     - Using the Controller: usage/controller.md
+#  - API Reference:
+#     - Device Driver: api_reference/driver.md
+#     - Device State: api_reference/states.md
+#     - Device Identification: api_reference/id_devices.md
+#     - Device Manual: api_reference/manual.md
+
+theme:
+  name: material
+  features:
+  - search.suggest
+  - search.highlight
+  - content.tabs.link
+  - content.tooltips
+  - content.code.annotate
+  - content.code.copy
+  - content.code.select
+  - navigation.tabs
+  - navigation.tabs.sticky
+  - navigation.sections
+  - navigation.top
+  - navigation.prune
+  - toc.follow
+
+plugins:
+  - search:
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: true
+            show_root_heading: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            show_submodules: true
+            docstring_style: "google"
+            docstring_section_style: "table"
+            show_signature: true
+            show_signature_annotations: true
+            signature_crossrefs: true
+            separate_signature: false
+          # import:
+  - mkdocs-pdf
+
+markdown_extensions:
+  - toc:
+      permalink: true
+      toc_depth: 4
+
+  # for code snippets/syntax highlighting
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
