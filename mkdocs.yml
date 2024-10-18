@@ -12,8 +12,8 @@ use_directory_urls: true
 
 nav:
  - Welcome: index.md
-#  - Installation:
-#     - Server Program: setup/installation.md
+ - Installation:
+    - Server Program: setup/installation.md
 #     - ARTIQ Device Database: setup/device_db.md
 #  - Usage:
 #     - Invoking the Server: usage/server.md
