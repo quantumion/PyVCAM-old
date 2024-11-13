@@ -1027,3 +1027,13 @@ class PyVCAM:
         :return: None
         """
         self.cam.meta_data_enabled = value
+
+    def ping(self) -> bool:
+        """
+        Indicates whether the object is built and accessible.
+        Allows the controller to be started by an ARTIQ controller manager.
+
+        :return: True always
+        :rtype: bool
+        """
+        return True
