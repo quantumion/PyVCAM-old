@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-__main__.py
+aqctl_pyvcam.py
 
 Implement ARTIQ Network Device Support Package (NDSP) to support Teledyne PrimeBSI camera integration into ARTIQ experiment.
 
@@ -50,10 +50,12 @@ def get_argparser():
     parser.add_argument("--version", action="version", version=version("pyvcam"))
     parser.add_argument("-d", "--device", action="store", required=not has_list_arg("-l", "--list"), help="Camera device name")
     parser.add_argument("-l", "--list", action="store_true", required=False, help="List available devices on the host")
+    parser.add_argument("-s", "--simulation", action="store_true", help="Run the controller in simulation mode")
     return parser
 
 
 def main():
+    # set up and parse command line interface
     args = get_argparser().parse_args()
     common_args.init_logger_from_args(args)
 
@@ -67,7 +69,11 @@ def main():
             pvc.uninit_pvcam()
         sys.exit(0)
 
-    # initiate controller
+    if args.simulation:
+        logger.critical("Simulation is not implemented")
+        sys.exit(1)
+
+    # initiate and run controller
     try:
         logger.info("Initiating PVCAM")
         pvc.init_pvcam()
