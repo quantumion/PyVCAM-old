@@ -110,6 +110,12 @@ setup(name='pyvcam',
       setup_requires=['numpy'],
       install_requires=['sipyco@git+https://github.com/m-labs/sipyco.git', 'numpy'],
       python_requires='>=3.10',
-      ext_modules=ext_modules)
+      ext_modules=ext_modules,
+      entry_points={
+          'console_scripts': [
+              'aqctl_pyvcam = pyvcam.aqctl_pyvcam:main',
+          ],
+      },
+)
 
 print('\n\n*************** Finished ***************\n')
