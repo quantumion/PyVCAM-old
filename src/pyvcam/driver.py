@@ -10,10 +10,10 @@ QuantumIon
 University of Waterloo
 """
 
-from pyvcam import pvc  # type: ignore
+# from pyvcam import pvc  # type: ignore
 from pyvcam.camera import Camera
 from pyvcam import constants as const
-from typing import NoReturn
+# from typing import NoReturn
 
 
 class PyVCAM:
@@ -22,31 +22,12 @@ class PyVCAM:
     """
     WAIT_FOREVER = -1  #: Negative values wait forever in functions with :code:`timeout` parameter.
 
-    def __init__(self) -> None:
+    def __init__(self, cam: Camera) -> None:
         """
-        Creates camera object.
+        Creates ARTIQ-friendly wrapper around camera object.
         **NOTE**: This does not open the camera. User has to call :func:`open` either in controller or experiment.
         """
-        pvc.init_pvcam()
-        self.cam = [cam for cam in Camera.detect_camera()][0]
-
-    def __del__(self) -> None:
-        """
-        Deletes camera object.
-        **NOTE**: This does not close the camera. User has to call :func:`close` either in controller or experiment.
-        """
-        pvc.uninit_pvcam()
-
-    def detect_camera(self) -> NoReturn:
-        """
-        Generator that yields a Camera object for a camera connected to the system.
-
-        **NOTE**: Function already called in :func:`__init__`. User should not explicitly call this function.
-
-        :raise NotImplementedError: User should not explicitly call this function.
-        """
-        raise NotImplementedError("""Function should not be explicitly called;
-                                     already called as needed during initialization.""")
+        self.cam = cam
 
     def open(self) -> None:
         """
