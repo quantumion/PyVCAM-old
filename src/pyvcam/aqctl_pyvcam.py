@@ -15,6 +15,7 @@ from sipyco import common_args
 import argparse
 import logging
 import sys
+from importlib.metadata import version
 from pyvcam.driver import PyVCAM
 from pyvcam.camera import Camera
 from pyvcam import pvc
@@ -46,9 +47,11 @@ def get_argparser():
                                      See documentation at https://github.com/Photometrics/PyVCAM""")
     common_args.simple_network_args(parser, 3249)
     common_args.verbosity_args(parser)
+    parser.add_argument("--version", action="version", version=version("pyvcam"))
     parser.add_argument("-d", "--device", action="store", required=not has_list_arg("-l", "--list"), help="Camera device name")
     parser.add_argument("-l", "--list", action="store_true", required=False, help="List available devices on the host")
     return parser
+
 
 def main():
     args = get_argparser().parse_args()
